@@ -172,6 +172,19 @@ export const Icons = {
       <path d="M7 14h10v6H7z" />
     </>,
   ),
+  // Previous view / Next view (arrow in a circle, as in Acrobat)
+  viewBack: base(
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M16.5 12h-9m0 0 3.5-3.5M7.5 12l3.5 3.5" />
+    </>,
+  ),
+  viewForward: base(
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M7.5 12h9m0 0-3.5-3.5m3.5 3.5-3.5 3.5" />
+    </>,
+  ),
   chevronUp: base(<path d="m6 15 6-6 6 6" />),
   chevronDown: base(<path d="m6 9 6 6 6-6" />),
   trash: base(

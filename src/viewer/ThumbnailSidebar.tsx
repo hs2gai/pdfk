@@ -2,10 +2,10 @@ import { useRef, useState, type DragEvent, type KeyboardEvent } from 'react';
 import { ThumbnailsPane, ThumbImg } from '@embedpdf/plugin-thumbnail/react';
 import { useScroll } from '@embedpdf/plugin-scroll/react';
 import type { ThumbMeta } from '@embedpdf/plugin-thumbnail';
-import { useAppSettings } from '../app/settings';
 import { t } from '../i18n';
+import { useViewNavigation } from './useViewNavigation';
 
-const PAGE_DRAG_TYPE = 'application/x-pdfugu-page';
+const PAGE_DRAG_TYPE = 'application/x-pdfk-page';
 
 interface Props {
   documentId: string;
@@ -21,9 +21,8 @@ interface Props {
  * Select and press Delete to remove, drag to reorder, drop a PDF file to insert it at that position.
  */
 export function ThumbnailSidebar({ documentId, pageCount, onDeletePage, onMovePage, onImportPdf }: Props) {
-  const { provides: scroll, state } = useScroll(documentId);
-  // In long documents the animation feels like waiting, so it can be turned off in settings (off by default)
-  const { smoothScroll } = useAppSettings();
+  const { state } = useScroll(documentId);
+  const { jump } = useViewNavigation(documentId);
   const [selected, setSelected] = useState<number | null>(null);
   /** Drop target (before the page at this index; pageCount means the end) */
   const [dropAt, setDropAt] = useState<number | null>(null);
@@ -33,7 +32,7 @@ export function ThumbnailSidebar({ documentId, pageCount, onDeletePage, onMovePa
   const select = (index: number) => {
     setSelected(index);
     aside.current?.focus();
-    scroll?.scrollToPage({ pageNumber: index + 1, behavior: smoothScroll ? 'smooth' : 'instant' });
+    jump({ pageIndex: index, top: 0 });
   };
   const onKey = (e: KeyboardEvent) => {
     if ((e.key === 'Delete' || e.key === 'Backspace') && selected !== null && onDeletePage) {

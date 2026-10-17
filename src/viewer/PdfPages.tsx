@@ -14,6 +14,7 @@ import { PasswordPrompt } from './PasswordPrompt';
 import { PdfErrorCode } from '@embedpdf/models';
 import { frozenFreeTextRenderers } from '../annotations/FrozenFreeText';
 import { FormHighlightLayer } from './FormHighlightLayer';
+import { linkRenderer } from './LinkArea';
 import { RegionLayer } from './RegionSelection';
 import { t } from '../i18n';
 
@@ -45,6 +46,8 @@ function rotationTransform(rotation: number, width: number, height: number): str
       return undefined;
   }
 }
+
+const annotationRenderers = [...frozenFreeTextRenderers, linkRenderer];
 
 /** Whether a page image is on screen (the first rendered page of a newly opened document) */
 export const isFirstPageRendered = () =>
@@ -82,6 +85,9 @@ export function PdfPages({ documentId, pageOverlay, annotationsInert, canAnnotat
                           pageIndex={pageIndex}
                           className="page"
                           style={{ width, height, ...(transform && { transform, transformOrigin: '0 0' }) }}
+                          // Text selection is our own layer; a native drag (of a triple-click / Ctrl+A selection
+                          // that holds the page) would only drag a ghost of the whole page and drop nothing
+                          onDragStart={(e) => e.preventDefault()}
                         >
                           <RenderLayer documentId={documentId} pageIndex={pageIndex} />
                           <SearchLayer documentId={documentId} pageIndex={pageIndex} scale={scale} className="search-layer" />
@@ -98,7 +104,7 @@ export function PdfPages({ documentId, pageOverlay, annotationsInert, canAnnotat
                             pageIndex={pageIndex}
                             style={annotationsInert ? { pointerEvents: 'none' } : undefined}
                             selectionMenu={(props) => <AnnotationMenu {...props} documentId={documentId} />}
-                            annotationRenderers={frozenFreeTextRenderers}
+                            annotationRenderers={annotationRenderers}
                           />
                           <RegionLayer pageIndex={pageIndex} scale={scale} />
                           {pageOverlay?.(pageIndex, scale)}

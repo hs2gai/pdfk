@@ -13,6 +13,7 @@ import { uuid } from '../shared/uuid';
 import { nextPaint, whenReady } from '../shared/next-paint';
 import { isFirstPageRendered } from '../viewer/PdfPages';
 import { useT } from '../i18n';
+import { OVERLAY_DELAY_MS } from './LoadingOverlay';
 
 /** Steps of opening a document, shown by the loading overlay */
 export type OpenPhase = 'reading' | 'fonts' | 'opening' | 'rendering' | 'preparing';
@@ -43,12 +44,16 @@ export function useDocumentOpener({ runtime, onOpening, onStatus }: Options) {
   const { activeDocumentId, activeDocument } = useActiveDocument();
   const recent = useRecentList();
   const [recentEntry, setRecentEntry] = useState<RecentMeta | null>(null);
-  // Opening in progress (null when idle). PDFium blocks the main thread, so each step is committed and painted
-  // before its work starts (a plain state update may only render after that work on a slow machine)
+  // Opening in progress (null when idle). PDFium blocks the main thread, so each step is committed before its work
+  // starts. Painting it costs a frame per step, so that only happens once the overlay is visible (after its delay);
+  // the first paint is always needed for the overlay's fade-in to run while PDFium blocks
   const [opening, setOpening] = useState<OpeningState | null>(null);
+  const openingSince = useRef(0);
   const showOpening = async (update: SetStateAction<OpeningState | null>) => {
     await Promise.resolve(); // flushSync is not allowed while React runs an effect
     flushSync(() => setOpening(update));
+    if (typeof update !== 'function') openingSince.current = performance.now();
+    else if (performance.now() - openingSince.current < OVERLAY_DELAY_MS) return;
     await nextPaint();
   };
   const toPhase = (phase: OpenPhase) => showOpening((o) => o && { ...o, phase });

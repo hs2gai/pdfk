@@ -13,8 +13,9 @@ const STAMP_JA_TOOL_ID = 'stampJa';
 /**
  * Default lock: form widgets are not selectable / movable as annotations;
  * they behave as input fields (the form plugin's fill mode).
+ * Links likewise: a click follows the link (LinkArea) instead of selecting it.
  */
-export const DEFAULT_LOCK: LockMode = { type: LockModeType.Include, categories: ['form'] };
+export const DEFAULT_LOCK: LockMode = { type: LockModeType.Include, categories: ['form', 'link'] };
 
 /**
  * Tunes the annotation plugin's default tools for Japanese business documents and registers our own text annotation tools.

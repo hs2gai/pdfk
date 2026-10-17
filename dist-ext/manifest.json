@@ -1,14 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "pdfugu",
-  "version": "0.7.0",
-  "description": "PDF をどこにも送らずに、ブラウザの中だけで注釈を付けて保存します。開いた PDF を pdfugu で表示します。",
+  "name": "pdfk",
+  "version": "0.8.0",
+  "description": "PDF をどこにも送らずに、ブラウザの中だけで注釈を付けて保存します。開いた PDF を pdfk で表示します。",
   "icons": {
     "192": "icon-192.png",
     "512": "icon-512.png"
   },
   "action": {
-    "default_title": "pdfugu を開く"
+    "default_title": "pdfk を開く"
   },
   "background": {
     "service_worker": "background.js",

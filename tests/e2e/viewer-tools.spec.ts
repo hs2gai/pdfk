@@ -156,3 +156,30 @@ test('印刷は全ページを画像にして注釈も含め、印刷後に片�
   await page.keyboard.press('Control+p');
   await expect.poll(() => page.evaluate(() => (window as unknown as { __printed: unknown[] }).__printed.length)).toBe(2);
 });
+
+test('トリプルクリックや Ctrl+A のあとにページをドラッグしても、ページ全体の残像ドラッグが始まらない', async ({
+  page,
+}) => {
+  await openPdf(page, 'sample-pages.pdf');
+  await page.evaluate(() => {
+    const w = window as unknown as { __drags: number };
+    w.__drags = 0;
+    // Bubbling listener: counts only drags nobody cancelled
+    window.addEventListener('dragstart', (e) => {
+      if (!e.defaultPrevented) w.__drags++;
+    });
+  });
+  const { box, scale } = await pageGeometry(page);
+  const at = (x: number, y: number) => [box.x + x * scale, box.y + y * scale] as const;
+  const drag = async () => {
+    await page.mouse.move(...at(100, 110));
+    await page.mouse.down();
+    await page.mouse.move(...at(300, 300), { steps: 8 });
+    await page.mouse.up();
+  };
+  await page.mouse.click(...at(100, 110), { clickCount: 3 });
+  await drag();
+  await page.keyboard.press('Control+a');
+  await drag();
+  expect(await page.evaluate(() => (window as unknown as { __drags: number }).__drags)).toBe(0);
+});

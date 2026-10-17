@@ -1,13 +1,13 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { useScroll } from '@embedpdf/plugin-scroll/react';
-import { useAppSettings } from '../app/settings';
 import { useT } from '../i18n';
 import { parsePageNumber } from './page-number';
+import { useViewNavigation } from './useViewNavigation';
 
 /** "3 / 12" in the toolbar. Type a page number and press Enter to go there */
 export function PageNavigator({ documentId }: { documentId: string }) {
-  const { provides: scroll, state } = useScroll(documentId);
-  const { smoothScroll } = useAppSettings();
+  const { state } = useScroll(documentId);
+  const { jump } = useViewNavigation(documentId);
   const t = useT();
   const [text, setText] = useState(String(state.currentPage));
   const [editing, setEditing] = useState(false);
@@ -20,7 +20,7 @@ export function PageNavigator({ documentId }: { documentId: string }) {
   const submit = (e: FormEvent) => {
     e.preventDefault();
     const page = parsePageNumber(text, state.totalPages);
-    if (page !== null) scroll?.scrollToPage({ pageNumber: page, behavior: smoothScroll ? 'smooth' : 'instant' });
+    if (page !== null) jump({ pageIndex: page - 1, top: 0 });
     setText(String(page ?? state.currentPage));
     (e.currentTarget.querySelector('input') as HTMLInputElement | null)?.blur();
   };

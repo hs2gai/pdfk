@@ -70,12 +70,15 @@ a.brand:hover .brand-name { color: var(--accent); }
 
 .viewer { flex: 1; min-height: 0; position: relative; }
 .viewport { background: #e9ecef; height: 100%; }
-.page { position: relative; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+.page { position: relative; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.2); user-select: none; }
+/* Form fields and text editors on the page keep the native caret / selection */
+.page input, .page textarea, .page [contenteditable] { user-select: text; }
 .empty { flex: 1; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #444; padding: 0 24px; box-sizing: border-box; text-align: center; }
 .empty p { max-width: 560px; margin: 8px 0; }
 .empty .muted { color: #888; font-size: 13px; }
 /* Loading overlay: a CSS transform animation keeps turning while PDFium blocks the main thread */
-.loading-overlay { position: absolute; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: rgba(244,245,247,.82); cursor: progress; }
+.loading-overlay { position: absolute; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: rgba(244,245,247,.82); cursor: progress; opacity: 0; animation: loading-appear .15s ease-out forwards; will-change: opacity; }
+@keyframes loading-appear { to { opacity: 1; } }
 .loading-overlay.settled { background: rgba(244,245,247,.35); }
 .loading-card { width: min(360px, calc(100% - 32px)); display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 24px 20px; background: #fff; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.12); text-align: center; }
 .loading-spinner { width: 36px; height: 36px; margin-bottom: 6px; border: 4px solid #dbe4f3; border-top-color: #2563eb; border-radius: 50%; animation: loading-spin .8s linear infinite; will-change: transform; }
@@ -196,6 +199,8 @@ a.brand:hover .brand-name { color: var(--accent); }
 /* フォーム欄のハイライト（Acrobat と同じ薄い青。印刷・保存には影響しない） */
 .form-highlight { position: absolute; inset: 0; pointer-events: none; }
 .form-highlight > div { position: absolute; background: rgba(204, 215, 255, .55); }
+/* Link annotations: invisible click target (the link's look is part of the page content) */
+.link-area { position: absolute; inset: 0; cursor: pointer; pointer-events: auto; }
 
 /* サムネイル */
 .viewer { display: flex; }

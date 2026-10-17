@@ -1,4 +1,4 @@
-# pdfugu
+# pdfk
 
 English | [日本語](README.ja.md)
 
@@ -28,7 +28,7 @@ A tool for editing PDFs locally, entirely inside your browser, and saving the re
 
 **Page operations** (thumbnails on the left): click to select and press the `Delete` key to remove, drag to reorder, drop a PDF file onto the thumbnails to insert its pages at that position. The rotate buttons on the toolbar turn the current page 90° left or right. After changing pages the document is saved as a new file, just like after content editing.
 
-**Search, print and page navigation**: the magnifier (`Ctrl+F`) finds text in the document and steps through the matches; `Aa` in the search bar matches case and `.*` searches with a regular expression (e.g. `Article \d+`). The printer (`Ctrl+P`) prints with annotations and form entries (each page is printed as a 150 dpi image, so text is printed as an image). Type a number in the page box and press `Enter` to go to that page.
+**Search, print and page navigation**: the magnifier (`Ctrl+F`) finds text in the document and steps through the matches; `Aa` in the search bar matches case and `.*` searches with a regular expression (e.g. `Article \d+`). The printer (`Ctrl+P`) prints with annotations and form entries (each page is printed as a 150 dpi image, so text is printed as an image). Type a number in the page box and press `Enter` to go to that page. Links in the PDF work too: a table of contents entry jumps to its chapter, and a web link (http / https / mailto only) opens in a new tab. The circled arrows next to the page box are Previous view / Next view (`Alt+←` / `Alt+→`, as in Acrobat): they return to where you were before following a link, a page number or a thumbnail.
 
 **Revert to original**: "Save ▾" → "Revert to original…" discards every annotation, form input, content edit and page change and goes back to the file as first opened (also after a reload or resuming the previous session).
 
@@ -36,7 +36,7 @@ A tool for editing PDFs locally, entirely inside your browser, and saving the re
 
 Touch: one finger works the tools (select text / annotations, place stamps), **two fingers scroll, pinch to zoom**. Ctrl + mouse wheel also zooms.
 
-Keyboard: `Delete` remove / `Ctrl+C` copy the selected text, area or annotations / `Ctrl+V` paste copied annotations / `Ctrl+F` search / `Ctrl+P` print / `Ctrl+Z` undo / `Ctrl+Y` redo / `Esc` back to the select tool / `Ctrl+Enter` confirms while typing text
+Keyboard: `Delete` remove / `Ctrl+C` copy the selected text, area or annotations / `Ctrl+V` paste copied annotations / `Ctrl+F` search / `Alt+←` `Alt+→` previous / next view / `Ctrl+P` print / `Ctrl+Z` undo / `Ctrl+Y` redo / `Esc` back to the select tool / `Ctrl+Enter` confirms while typing text
 
 ## Language
 
@@ -65,14 +65,14 @@ Differences outside Chrome / Edge:
 
 ## Chrome extension
 
-An extension that uses pdfugu instead of Chrome's built-in PDF viewer. When a PDF is opened in the browser (link, address bar, local file), the tab switches to pdfugu. It is not on the Web Store; a prebuilt copy is included in the repository as `dist-ext/`.
+An extension that uses pdfk instead of Chrome's built-in PDF viewer. When a PDF is opened in the browser (link, address bar, local file), the tab switches to pdfk. It is not on the Web Store; a prebuilt copy is included in the repository as `dist-ext/`.
 
 1. Get the repository (`git clone` or "Download ZIP" on GitHub, then extract it)
 2. Open `chrome://extensions` and turn on "Developer mode" (top right)
 3. "Load unpacked" → choose the `dist-ext/` folder
 4. To open local PDFs as well (`file://`, including files opened from the download history), make sure "Allow access to file URLs" is on in the extension's details (usually on for unpacked extensions)
 
-The only request the extension makes is for "the PDF URL the user opened"; there is no other traffic, same as the web build. If you do not want automatic switching, right-click the toolbar icon and uncheck "PDF を自動で pdfugu で開く" — pdfugu then opens only from the icon and from the right-click menu on PDF links.
+The only request the extension makes is for "the PDF URL the user opened"; there is no other traffic, same as the web build. If you do not want automatic switching, right-click the toolbar icon and uncheck "PDF を自動で pdfk で開く" — pdfk then opens only from the icon and from the right-click menu on PDF links.
 
 To build it yourself, run the following and load `dist-ext/` the same way. After rebuilding (or updating the repository), press the reload button in `chrome://extensions`.
 

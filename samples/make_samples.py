@@ -160,6 +160,62 @@ c.save()
 print("ok (pages)")
 
 
+# ---- sample-links.pdf: 目次から本文へ飛ぶリンク（Word・InDesign 出力の目次の典型）＋外部リンク ----
+# 宛先の書き方を 3 通り揃える: 明示の /Fit（ページ全体）、明示の /XYZ（ページ途中の見出し）、名前付き宛先（/Names /Dests 経由）。
+# 外部リンクは http(s) を開き、javascript: は開かないことの確認用
+import io
+
+TOC = [
+    ("第1章　はじめに（/Fit）", "fit"),
+    ("第2章　本文の途中（/XYZ）", "xyz"),
+    ("第3章　名前付き宛先", "named"),
+    ("外部リンク https://example.com/", "https://example.com/"),
+    ("javascript: のリンク（開かない）", "javascript:alert(1)"),
+]
+CH2_Y = 500  # 第2章の見出しの位置（上端からの pt）。/XYZ の宛先でここへ飛ぶ
+buf = io.BytesIO()
+c = canvas.Canvas(buf, pagesize=A4)
+c.setFont("BIZUD", 24)
+c.drawString(80, H - 100, "目次")
+c.setFont("BIZUD", 14)
+for i, (label, _) in enumerate(TOC):
+    c.drawString(80, H - 160 - i * 40, label)
+c.showPage()
+# 末尾の「付録」は、第3章のページを画面の上端まで送れるようにするための余白（最終ページはそれ以上スクロールできない）
+for n, title in enumerate(["第1章　はじめに", "第2章　本文の途中", "第3章　名前付き宛先", "付録"], start=1):
+    c.setFont("BIZUD", 24)
+    c.drawString(80, H - (CH2_Y if n == 2 else 100), title)
+    c.setFont("BIZUD", 12)
+    c.drawString(80, 60, f"本文 {n + 1} ページ目")
+    c.showPage()
+c.save()
+
+doc = fitz.open("pdf", buf.getvalue())
+for i, (_, target) in enumerate(TOC):
+    top = 160 + i * 40 - 16
+    rect = fitz.Rect(75, top, 400, top + 22)
+    if not target.startswith(("https:", "javascript:")):
+        # 宛先は後で書き換えるので、仮に 1 ページ目へのリンクとして作る
+        doc[0].insert_link({"kind": fitz.LINK_GOTO, "from": rect, "page": 0, "to": fitz.Point(0, 0)})
+    else:
+        doc[0].insert_link({"kind": fitz.LINK_URI, "from": rect, "uri": target})
+# 開き直してから書き換える（開いたままのページはリンクを保存時に書き戻してしまう）
+doc = fitz.open("pdf", doc.tobytes())
+dests = {
+    "fit": f"[{doc[1].xref} 0 R /Fit]",
+    "xyz": f"[{doc[2].xref} 0 R /XYZ 80 {H - CH2_Y + 30:.0f} null]",
+    "named": "(ch3)",
+}
+goto = [link for link in doc[0].get_links() if link["kind"] == fitz.LINK_GOTO]
+for link, key in zip(sorted(goto, key=lambda l: l["from"].y0), ["fit", "xyz", "named"]):
+    doc.xref_set_key(link["xref"], "A", "null")  # PyMuPDF は /A の GoTo で書くので、/Dest に置き換える
+    doc.xref_set_key(link["xref"], "Dest", dests[key])
+doc.xref_set_key(doc.pdf_catalog(), "Names", f"<</Dests<</Names[(ch3)[{doc[3].xref} 0 R /Fit]]>>>>")
+doc.save("samples/sample-links.pdf", garbage=1, deflate=True)
+doc.close()
+print("ok (links)")
+
+
 # ---- sample-encrypted.pdf: パスワード付き（開くパスワード 1234、注釈は許可） ----
 doc = fitz.open("samples/sample-ja-form.pdf")
 doc.save(

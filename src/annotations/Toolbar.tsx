@@ -10,6 +10,7 @@ import type { RecentMeta } from '../app/recent-store';
 import { Brand } from '../app/Brand';
 import { useT } from '../i18n';
 import { PageNavigator } from '../viewer/PageNavigator';
+import { ViewHistoryButtons } from '../viewer/ViewHistoryButtons';
 
 interface Props {
   runtime: PdfRuntime;
@@ -90,6 +91,7 @@ export function Toolbar({
             onClick={onToggleThumbs}
           />
           <PageNavigator documentId={documentId} />
+          <ViewHistoryButtons documentId={documentId} />
           <span className="sep" />
           <ZoomButtons documentId={documentId} />
           {ROTATIONS.map((r) => (

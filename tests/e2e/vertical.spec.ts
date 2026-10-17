@@ -220,7 +220,7 @@ test('本文編集で縦書きの文字を置換すると縦書き（Identity-V�
   const bytes = await saveVia(page, '新ファイルで保存');
   // The new text uses our embedded font in vertical writing mode
   const fontDicts = bytes.toString('latin1').match(/<<[^<>]*\/Identity-V[^<>]*>>/g) ?? [];
-  expect(fontDicts.some((d) => d.includes('PDFUGU+'))).toBe(true);
+  expect(fontDicts.some((d) => d.includes('PDFK+'))).toBe(true);
 
   // Reopen: the text reads back, in the place of the original column 1
   await reopenAfterContentEdit(page, bytes);

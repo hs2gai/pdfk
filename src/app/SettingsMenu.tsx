@@ -6,7 +6,7 @@ import { useDismiss } from '../shared/useDismiss';
 import { LOCALES, useT } from '../i18n';
 
 /** Public repository (source code, releases) */
-const REPOSITORY_URL = 'https://github.com/hs2gai/pdfugu';
+const REPOSITORY_URL = 'https://github.com/hs2gai/pdfk';
 
 /** Settings menu at the right end of the toolbar */
 export function SettingsMenu() {
@@ -56,52 +56,66 @@ export function SettingsMenu() {
               ))}
             </select>
           </label>
-          <label className="settings-row">
-            <input type="checkbox" checked={s.autoResume} onChange={(e) => appSettings.set({ autoResume: e.target.checked })} />
-            <span>
-              <span className="menu-label">{t('settings.autoResume')}</span>
-              <span className="menu-help">{t('settings.autoResume.help')}</span>
-            </span>
-          </label>
-          <label className="settings-row">
-            <input
-              type="checkbox"
-              checked={s.smoothScroll}
-              onChange={(e) => appSettings.set({ smoothScroll: e.target.checked })}
-            />
-            <span>
-              <span className="menu-label">{t('settings.smoothScroll')}</span>
-              <span className="menu-help">{t('settings.smoothScroll.help')}</span>
-            </span>
-          </label>
-          <label className="settings-row">
-            <input
-              type="checkbox"
-              checked={s.highlightFields}
-              onChange={(e) => appSettings.set({ highlightFields: e.target.checked })}
-            />
-            <span>
-              <span className="menu-label">{t('settings.highlightFields')}</span>
-              <span className="menu-help">{t('settings.highlightFields.help')}</span>
-            </span>
-          </label>
+          <CheckRow
+            label={t('settings.autoResume')}
+            help={t('settings.autoResume.help')}
+            checked={s.autoResume}
+            onChange={(on) => appSettings.set({ autoResume: on })}
+          />
+          <CheckRow
+            label={t('settings.smoothScroll')}
+            help={t('settings.smoothScroll.help')}
+            checked={s.smoothScroll}
+            onChange={(on) => appSettings.set({ smoothScroll: on })}
+          />
+          <CheckRow
+            label={t('settings.highlightFields')}
+            help={t('settings.highlightFields.help')}
+            checked={s.highlightFields}
+            onChange={(on) => appSettings.set({ highlightFields: on })}
+          />
           {supportsLocalFonts() && (
-            <label className="settings-row">
-              <input type="checkbox" checked={s.localFonts} onChange={(e) => void toggleLocalFonts(e.target.checked)} />
-              <span>
-                <span className="menu-label">{t('settings.localFonts')}</span>
-                <span className="menu-help">{fontError ?? t('settings.localFonts.help')}</span>
-              </span>
-            </label>
+            <CheckRow
+              label={t('settings.localFonts')}
+              help={t('settings.localFonts.help')}
+              error={fontError}
+              checked={s.localFonts}
+              onChange={(on) => void toggleLocalFonts(on)}
+            />
           )}
           <div className="menu-help settings-version">
             {/* Opened only when clicked: nothing is fetched from there by the app (P1) */}
             <a href={REPOSITORY_URL} target="_blank" rel="noopener noreferrer" title={t('settings.repository')}>
-              pdfugu {__APP_VERSION__}
+              pdfk {__APP_VERSION__}
             </a>
           </div>
         </div>
       )}
     </div>
+  );
+}
+
+/** Checkbox row showing only the title; the description appears as a tooltip on hover */
+function CheckRow({
+  label,
+  help,
+  error,
+  checked,
+  onChange,
+}: {
+  label: string;
+  help: string;
+  error?: string | null;
+  checked: boolean;
+  onChange: (on: boolean) => void;
+}) {
+  return (
+    <label className="settings-row" title={help}>
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      <span>
+        <span className="menu-label">{label}</span>
+        {error && <span className="menu-help">{error}</span>}
+      </span>
+    </label>
   );
 }

@@ -13,7 +13,7 @@ const FPDF_FILLMODE_NONE = 0;
  * Marked-content tag on the Form XObjects that hold vertical text written by replaceText.
  * Lets such a form be found again and edited as text (its inner objects are a plain text column)
  */
-export const VERTICAL_TEXT_MARK = 'PdfuguVerticalText';
+export const VERTICAL_TEXT_MARK = 'PdfkVerticalText';
 
 /** Affine matrix as in FPDFPageObj_GetMatrix */
 export interface Matrix {

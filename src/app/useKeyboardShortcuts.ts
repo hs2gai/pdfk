@@ -18,7 +18,7 @@ interface Options {
   onPrint: () => void;
 }
 
-const isTyping = (target: EventTarget | null) =>
+export const isTyping = (target: EventTarget | null) =>
   target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
 
 /** Delete / Backspace deletes the selected annotations, Ctrl+C / Ctrl+V copy and paste, Ctrl+F search, Ctrl+P print, Ctrl+Z / Ctrl+Y (Ctrl+Shift+Z) undo/redo, Esc returns to the select tool */

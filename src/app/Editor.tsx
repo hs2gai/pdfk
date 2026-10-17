@@ -40,6 +40,8 @@ const plugins = [
     tools: [
       { id: 'freeText', interaction: { exclusive: false, isResizable: false, isRotatable: false } },
       { id: 'freeTextCallout', interaction: { exclusive: false, isResizable: false, isRotatable: false } },
+      // Its own category so DEFAULT_LOCK can lock links without locking markup
+      { id: 'link', categories: ['link'] },
     ],
   }),
 ];
